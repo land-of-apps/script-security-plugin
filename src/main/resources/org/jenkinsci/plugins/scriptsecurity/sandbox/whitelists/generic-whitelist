@@ -32,14 +32,13 @@ method groovy.lang.Closure ncurry int java.lang.Object[]
 method groovy.lang.Closure setDelegate java.lang.Object
 method groovy.lang.Closure setResolveStrategy int
 method groovy.lang.GString plus java.lang.String
-method groovy.lang.NumberRange by int
-method groovy.lang.NumberRange getStepSize
 method groovy.lang.Range getFrom
 method groovy.lang.Range getTo
 method groovy.lang.Range step int
 method groovy.lang.Range step int groovy.lang.Closure
 method groovy.lang.Script getBinding
 
+method java.io.Flushable flush
 # Useful to show stacktrace to the user.
 new java.io.PrintWriter java.io.Writer
 # Needed for Groovy Templates to emit output:
@@ -66,6 +65,7 @@ method java.lang.Appendable append char
 method java.lang.Appendable append java.lang.CharSequence
 method java.lang.Appendable append java.lang.CharSequence int int
 method java.lang.AutoCloseable close
+method java.lang.Boolean booleanValue
 new java.lang.Boolean java.lang.String
 staticMethod java.lang.Boolean parseBoolean java.lang.String
 staticMethod java.lang.Boolean valueOf boolean
@@ -80,10 +80,10 @@ new java.lang.Enum java.lang.String int
 method java.lang.Enum name
 method java.lang.Enum ordinal
 new java.lang.Exception java.lang.String
-method java.lang.Flushable flush
 staticField java.lang.Integer MAX_VALUE
 # could add valueOf, though currently the staticField’s need to be whitelisted, which is the more likely use case
 staticMethod java.lang.Integer parseInt java.lang.String
+staticMethod java.lang.Integer parseInt java.lang.String int
 staticMethod java.lang.Integer toString int int
 staticMethod java.lang.Integer valueOf java.lang.String
 method java.lang.Iterable iterator
@@ -139,13 +139,77 @@ staticMethod java.lang.String valueOf java.lang.Object
 staticMethod java.lang.System currentTimeMillis
 method java.lang.Throwable getCause
 method java.lang.Throwable getMessage
+method java.lang.Throwable printStackTrace java.io.PrintStream
+method java.lang.Throwable printStackTrace java.io.PrintWriter
 method java.math.BigDecimal multiply java.math.BigDecimal
 new java.net.MalformedURLException java.lang.String
 new java.net.URL java.lang.String
 staticMethod java.net.URLDecoder decode java.lang.String java.lang.String
 staticMethod java.net.URLEncoder encode java.lang.String java.lang.String
+staticField java.text.DateFormat AM_PM_FIELD
+staticField java.text.DateFormat DATE_FIELD
+staticField java.text.DateFormat DAY_OF_WEEK_FIELD
+staticField java.text.DateFormat DAY_OF_WEEK_IN_MONTH_FIELD
+staticField java.text.DateFormat DAY_OF_YEAR_FIELD
+staticField java.text.DateFormat DEFAULT
+staticField java.text.DateFormat ERA_FIELD
+staticField java.text.DateFormat FULL
+staticField java.text.DateFormat HOUR0_FIELD
+staticField java.text.DateFormat HOUR1_FIELD
+staticField java.text.DateFormat HOUR_OF_DAY0_FIELD
+staticField java.text.DateFormat HOUR_OF_DAY1_FIELD
+staticField java.text.DateFormat LONG
+staticField java.text.DateFormat MEDIUM
+staticField java.text.DateFormat MILLISECOND_FIELD
+staticField java.text.DateFormat MINUTE_FIELD
+staticField java.text.DateFormat MONTH_FIELD
+staticField java.text.DateFormat SECOND_FIELD
+staticField java.text.DateFormat SHORT
+staticField java.text.DateFormat TIMEZONE_FIELD
+staticField java.text.DateFormat WEEK_OF_MONTH_FIELD
+staticField java.text.DateFormat WEEK_OF_YEAR_FIELD
+staticField java.text.DateFormat YEAR_FIELD
+method java.text.DateFormat format java.util.Date
+staticMethod java.text.DateFormat getAvailableLocales
+method java.text.DateFormat getCalendar
+staticMethod java.text.DateFormat getDateInstance
+staticMethod java.text.DateFormat getDateInstance int
+staticMethod java.text.DateFormat getDateInstance int java.util.Locale
+staticMethod java.text.DateFormat getDateTimeInstance
+staticMethod java.text.DateFormat getDateTimeInstance int int
+staticMethod java.text.DateFormat getDateTimeInstance int int java.util.Locale
+staticMethod java.text.DateFormat getInstance
+method java.text.DateFormat getNumberFormat
+staticMethod java.text.DateFormat getTimeInstance
+staticMethod java.text.DateFormat getTimeInstance int
+staticMethod java.text.DateFormat getTimeInstance int java.util.Locale
+method java.text.DateFormat getTimeZone
+method java.text.DateFormat isLenient
+method java.text.DateFormat parse java.lang.String
+method java.text.DateFormat setCalendar java.util.Calendar
+method java.text.DateFormat setLenient boolean
+method java.text.DateFormat setNumberFormat java.text.NumberFormat
+method java.text.DateFormat setTimeZone java.util.TimeZone
 method java.text.Format format java.lang.Object
+method java.text.Format formatToCharacterIterator java.lang.Object
+method java.text.Format parseObject java.lang.String
 new java.text.SimpleDateFormat java.lang.String
+staticField java.time.DayOfWeek FRIDAY
+staticField java.time.DayOfWeek MONDAY
+staticField java.time.DayOfWeek SATURDAY
+staticField java.time.DayOfWeek SUNDAY
+staticField java.time.DayOfWeek THURSDAY
+staticField java.time.DayOfWeek TUESDAY
+staticField java.time.DayOfWeek WEDNESDAY
+method java.time.Instant getEpochSecond
+method java.time.Instant getNano
+method java.time.Instant minusMillis long
+method java.time.Instant minusNanos long
+method java.time.Instant minusSeconds long
+staticMethod java.time.Instant parse java.lang.CharSequence
+method java.time.Instant plusMillis long
+method java.time.Instant plusNanos long
+method java.time.Instant plusSeconds long
 method java.time.LocalDate getDayOfMonth
 method java.time.LocalDate getDayOfWeek
 method java.time.LocalDate getDayOfYear
@@ -255,6 +319,7 @@ staticMethod java.time.format.DateTimeFormatter ofPattern java.lang.String
 new java.util.ArrayList java.util.Collection
 staticMethod java.util.Arrays asList java.lang.Object[]
 staticMethod java.util.Arrays toString java.lang.Object[]
+staticField java.util.Calendar ALL_STYLES
 staticField java.util.Calendar AM
 staticField java.util.Calendar AM_PM
 staticField java.util.Calendar APRIL
@@ -275,39 +340,168 @@ staticField java.util.Calendar HOUR_OF_DAY
 staticField java.util.Calendar JANUARY
 staticField java.util.Calendar JULY
 staticField java.util.Calendar JUNE
+staticField java.util.Calendar LONG
+staticField java.util.Calendar LONG_FORMAT
+staticField java.util.Calendar LONG_STANDALONE
 staticField java.util.Calendar MARCH
 staticField java.util.Calendar MAY
 staticField java.util.Calendar MILLISECOND
 staticField java.util.Calendar MINUTE
 staticField java.util.Calendar MONDAY
 staticField java.util.Calendar MONTH
+staticField java.util.Calendar NARROW_FORMAT
+staticField java.util.Calendar NARROW_STANDALONE
 staticField java.util.Calendar NOVEMBER
 staticField java.util.Calendar OCTOBER
 staticField java.util.Calendar PM
 staticField java.util.Calendar SATURDAY
 staticField java.util.Calendar SECOND
 staticField java.util.Calendar SEPTEMBER
+staticField java.util.Calendar SHORT
+staticField java.util.Calendar SHORT_FORMAT
+staticField java.util.Calendar SHORT_STANDALONE
 staticField java.util.Calendar SUNDAY
 staticField java.util.Calendar THURSDAY
 staticField java.util.Calendar TUESDAY
+staticField java.util.Calendar UNDECIMBER
 staticField java.util.Calendar WEDNESDAY
 staticField java.util.Calendar WEEK_OF_MONTH
 staticField java.util.Calendar WEEK_OF_YEAR
 staticField java.util.Calendar YEAR
 staticField java.util.Calendar ZONE_OFFSET
+method java.util.Calendar add int int
+method java.util.Calendar after java.lang.Object
+method java.util.Calendar before java.lang.Object
+method java.util.Calendar clear
+method java.util.Calendar clear int
+method java.util.Calendar compareTo java.util.Calendar
 method java.util.Calendar get int
+method java.util.Calendar getActualMaximum int
+method java.util.Calendar getActualMinimum int
+staticMethod java.util.Calendar getAvailableCalendarTypes
+staticMethod java.util.Calendar getAvailableLocales
+method java.util.Calendar getCalendarType
+method java.util.Calendar getDisplayName int int java.util.Locale
+method java.util.Calendar getDisplayNames int int java.util.Locale
+method java.util.Calendar getFirstDayOfWeek
+method java.util.Calendar getGreatestMinimum int
 staticMethod java.util.Calendar getInstance
+staticMethod java.util.Calendar getInstance java.util.Locale
+staticMethod java.util.Calendar getInstance java.util.TimeZone
+staticMethod java.util.Calendar getInstance java.util.TimeZone java.util.Locale
+method java.util.Calendar getLeastMaximum int
+method java.util.Calendar getMaximum int
+method java.util.Calendar getMinimalDaysInFirstWeek
+method java.util.Calendar getMinimum int
+method java.util.Calendar getTime
+method java.util.Calendar getTimeInMillis
+method java.util.Calendar getTimeZone
+method java.util.Calendar getWeekYear
+method java.util.Calendar getWeeksInWeekYear
+method java.util.Calendar isLenient
+method java.util.Calendar isSet int
+method java.util.Calendar isWeekDateSupported
+method java.util.Calendar roll int boolean
+method java.util.Calendar roll int int
+method java.util.Calendar set int int
+method java.util.Calendar set int int int
+method java.util.Calendar set int int int int int
+method java.util.Calendar set int int int int int int
+method java.util.Calendar setFirstDayOfWeek int
+method java.util.Calendar setLenient boolean
+method java.util.Calendar setMinimalDaysInFirstWeek int
+method java.util.Calendar setTime java.util.Date
+method java.util.Calendar setTimeInMillis long
+method java.util.Calendar setTimeZone java.util.TimeZone
+method java.util.Calendar setWeekDate int int int
+method java.util.Calendar toInstant
 method java.util.Collection add java.lang.Object
 method java.util.Collection addAll java.util.Collection
 method java.util.Collection contains java.lang.Object
+method java.util.Collection containsAll java.util.Collection
 method java.util.Collection isEmpty
 method java.util.Collection remove java.lang.Object
 method java.util.Collection removeAll java.util.Collection
 method java.util.Collection retainAll java.util.Collection
 method java.util.Collection size
+staticMethod java.util.Collections addAll java.util.Collection java.lang.Object[]
+staticMethod java.util.Collections asLifoQueue java.util.Deque
+staticMethod java.util.Collections binarySearch java.util.List java.lang.Object
+staticMethod java.util.Collections binarySearch java.util.List java.lang.Object java.util.Comparator
+staticMethod java.util.Collections checkedCollection java.util.Collection java.lang.Class
+staticMethod java.util.Collections checkedList java.util.List java.lang.Class
+staticMethod java.util.Collections checkedMap java.util.Map java.lang.Class java.lang.Class
+staticMethod java.util.Collections checkedSortedMap java.util.SortedMap java.lang.Class java.lang.Class
+staticMethod java.util.Collections checkedSortedSet java.util.SortedSet java.lang.Class
+staticMethod java.util.Collections copy java.util.List java.util.List
+staticMethod java.util.Collections disjoint java.util.Collection java.util.Collection
+staticMethod java.util.Collections emptyEnumeration
+staticMethod java.util.Collections emptyIterator
+staticMethod java.util.Collections emptyList
+staticMethod java.util.Collections emptyListIterator
+staticMethod java.util.Collections emptyMap
+staticMethod java.util.Collections emptySet
+staticMethod java.util.Collections enumeration java.util.Collection
+staticMethod java.util.Collections fill java.util.List java.lang.Object
+staticMethod java.util.Collections frequency java.util.Collection java.lang.Object
+staticMethod java.util.Collections indexOfSubList java.util.List java.util.List
+staticMethod java.util.Collections lastIndexOfSubList java.util.List java.util.List
+staticMethod java.util.Collections list java.util.Enumeration
+staticMethod java.util.Collections max java.util.Collection
+staticMethod java.util.Collections max java.util.Collection java.util.Comparator
+staticMethod java.util.Collections min java.util.Collection
+staticMethod java.util.Collections min java.util.Collection java.util.Comparator
+staticMethod java.util.Collections nCopies int java.lang.Object
+staticMethod java.util.Collections newSetFromMap java.util.Map
+staticMethod java.util.Collections replaceAll java.util.List java.lang.Object java.lang.Object
+staticMethod java.util.Collections reverse java.util.List
+staticMethod java.util.Collections reverseOrder
+staticMethod java.util.Collections reverseOrder java.util.Comparator
+staticMethod java.util.Collections rotate java.util.List int
+staticMethod java.util.Collections shuffle java.util.List
+staticMethod java.util.Collections shuffle java.util.List java.util.Random
+staticMethod java.util.Collections singleton java.lang.Object
+staticMethod java.util.Collections singletonList java.lang.Object
+staticMethod java.util.Collections singletonMap java.lang.Object java.lang.Object
+staticMethod java.util.Collections sort java.util.List
 staticMethod java.util.Collections sort java.util.List java.util.Comparator
+staticMethod java.util.Collections swap java.util.List int int
+staticMethod java.util.Collections synchronizedCollection java.util.Collection
+staticMethod java.util.Collections synchronizedList java.util.List
+staticMethod java.util.Collections synchronizedMap java.util.Map
+staticMethod java.util.Collections synchronizedSet java.util.Set
+staticMethod java.util.Collections synchronizedSortedMap java.util.SortedMap
+staticMethod java.util.Collections synchronizedSortedSet java.util.SortedSet
+staticMethod java.util.Collections unmodifiableCollection java.util.Collection
+staticMethod java.util.Collections unmodifiableList java.util.List
+staticMethod java.util.Collections unmodifiableMap java.util.Map
+staticMethod java.util.Collections unmodifiableSet java.util.Set
+staticMethod java.util.Collections unmodifiableSortedMap java.util.SortedMap
+staticMethod java.util.Collections unmodifiableSortedSet java.util.SortedSet
+method java.util.Comparator compare java.lang.Object java.lang.Object
 new java.util.Date
+method java.util.Date after java.util.Date
+method java.util.Date before java.util.Date
+method java.util.Date getDate
+method java.util.Date getDay
+method java.util.Date getHours
+method java.util.Date getMinutes
+method java.util.Date getMonth
+method java.util.Date getSeconds
+method java.util.Date getTime
+method java.util.Date getTimezoneOffset
+method java.util.Date getYear
 new java.util.Date long
+staticMethod java.util.Date parse java.lang.String
+method java.util.Date setDate int
+method java.util.Date setHours int
+method java.util.Date setMinutes int
+method java.util.Date setMonth int
+method java.util.Date setSeconds int
+method java.util.Date setTime long
+method java.util.Date setYear int
+method java.util.Date toGMTString
+method java.util.Date toLocaleString
 new java.util.HashSet
 new java.util.HashSet java.util.Collection
 method java.util.Iterator hasNext
@@ -315,6 +509,7 @@ method java.util.Iterator next
 new java.util.LinkedHashSet
 method java.util.List add int java.lang.Object
 method java.util.List get int
+method java.util.List indexOf java.lang.Object
 method java.util.List remove int
 method java.util.List subList int int
 staticField java.util.Locale CANADA
@@ -373,22 +568,78 @@ staticMethod java.util.UUID randomUUID
 method java.util.concurrent.Callable call
 staticField java.util.concurrent.TimeUnit HOURS
 staticField java.util.concurrent.TimeUnit MINUTES
+method java.util.regex.MatchResult end
+method java.util.regex.MatchResult end int
+method java.util.regex.MatchResult group
 method java.util.regex.MatchResult group int
+method java.util.regex.MatchResult groupCount
+method java.util.regex.MatchResult start
+method java.util.regex.MatchResult start int
+method java.util.regex.Matcher appendReplacement java.lang.StringBuffer java.lang.String
+method java.util.regex.Matcher appendTail java.lang.StringBuffer
+method java.util.regex.Matcher end java.lang.String
 method java.util.regex.Matcher find
+method java.util.regex.Matcher find int
 method java.util.regex.Matcher group java.lang.String
+method java.util.regex.Matcher hasAnchoringBounds
+method java.util.regex.Matcher hasTransparentBounds
+method java.util.regex.Matcher hitEnd
+method java.util.regex.Matcher lookingAt
 method java.util.regex.Matcher matches
+method java.util.regex.Matcher pattern
+staticMethod java.util.regex.Matcher quoteReplacement java.lang.String
+method java.util.regex.Matcher region int int
+method java.util.regex.Matcher regionEnd
+method java.util.regex.Matcher regionStart
 method java.util.regex.Matcher replaceAll java.lang.String
 method java.util.regex.Matcher replaceFirst java.lang.String
+method java.util.regex.Matcher requireEnd
+method java.util.regex.Matcher reset
+method java.util.regex.Matcher reset java.lang.CharSequence
+method java.util.regex.Matcher start java.lang.String
+method java.util.regex.Matcher toMatchResult
+method java.util.regex.Matcher useAnchoringBounds boolean
+method java.util.regex.Matcher usePattern java.util.regex.Pattern
+method java.util.regex.Matcher useTransparentBounds boolean
 staticMethod java.util.regex.Pattern compile java.lang.String
+staticMethod java.util.regex.Pattern compile java.lang.String int
+method java.util.regex.Pattern flags
 method java.util.regex.Pattern matcher java.lang.CharSequence
+staticMethod java.util.regex.Pattern matches java.lang.String java.lang.CharSequence
+method java.util.regex.Pattern pattern
+staticMethod java.util.regex.Pattern quote java.lang.String
+method java.util.regex.Pattern split java.lang.CharSequence
+method java.util.regex.Pattern split java.lang.CharSequence int
 method net.sf.json.JSON isArray
 method net.sf.json.JSON size
 
 
 # More Groovy:
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods downto java.util.Calendar java.util.Calendar groovy.lang.Closure
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods downto java.util.Date java.util.Date groovy.lang.Closure
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods format java.util.Calendar java.lang.String
 staticMethod org.codehaus.groovy.runtime.DateGroovyMethods format java.util.Date java.lang.String
 staticMethod org.codehaus.groovy.runtime.DateGroovyMethods format java.util.Date java.lang.String java.util.TimeZone
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods getAt java.util.Calendar int
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods getAt java.util.Date int
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods getDateString java.util.Date
 staticMethod org.codehaus.groovy.runtime.DateGroovyMethods getDateTimeString java.util.Date
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods getTimeString java.util.Date
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods minus java.util.Calendar java.util.Calendar
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods minus java.util.Date int
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods minus java.util.Date java.util.Date
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods next java.util.Calendar
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods next java.util.Date
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods plus java.util.Date int
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods previous java.util.Calendar
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods previous java.util.Date
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods putAt java.util.Calendar int int
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods putAt java.util.Date int int
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods set java.util.Calendar java.util.Map
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods set java.util.Date java.util.Map
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods toCalendar java.util.Date
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods upto java.util.Calendar java.util.Calendar groovy.lang.Closure
+staticMethod org.codehaus.groovy.runtime.DateGroovyMethods upto java.util.Date java.util.Date groovy.lang.Closure
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods abs java.lang.Number
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods addAll java.util.Collection java.lang.Object[]
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods any java.lang.Iterable groovy.lang.Closure
@@ -511,6 +762,8 @@ staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods first java.util.Li
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods flatten java.util.Collection groovy.lang.Closure
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods flatten java.util.List
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods get java.util.Map java.lang.Object java.lang.Object
+staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.lang.Iterable int
+staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.lang.Object[] groovy.lang.IntRange
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.lang.Object[] groovy.lang.Range
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.lang.Object[] java.util.Collection
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.lang.String groovy.lang.IntRange
@@ -519,6 +772,7 @@ staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.lang.St
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.lang.String java.util.Collection
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.util.List groovy.lang.Range
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.util.List int
+staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.util.List java.util.Collection
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.util.Map java.lang.Object
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.util.regex.Matcher int
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getChars java.lang.String
@@ -541,6 +795,7 @@ staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods inject java.util.I
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods inject java.util.Map java.lang.Object groovy.lang.Closure
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods intersect java.util.Set java.lang.Iterable
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods isCase java.util.Collection java.lang.Object
+staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods isInteger java.lang.String
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods isNumber java.lang.String
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods iterator java.lang.Object
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods join boolean[] java.lang.String
@@ -560,6 +815,7 @@ staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods last java.lang.Obj
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods last java.util.List
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.io.Writer java.lang.Object
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.lang.String java.lang.Object
+staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.lang.StringBuffer java.lang.Object
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.util.Collection java.lang.Object
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.util.List java.lang.Object
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.util.Map java.util.Map
@@ -587,8 +843,6 @@ staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods minus java.util.Co
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods minus java.util.List java.lang.Iterable
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods minus java.util.List java.lang.Object
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods minus java.util.List java.util.Collection
-staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods minus java.util.List removeAt int
-staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods minus java.util.List removeLast
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods minus java.util.Map java.util.Map
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods minus java.util.Set java.lang.Iterable
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods minus java.util.Set java.lang.Object
@@ -685,6 +939,7 @@ staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods sort java.util.Col
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods sort java.util.Iterator
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods sort java.util.Iterator groovy.lang.Closure
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods sort java.util.Iterator java.util.Comparator
+staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods sort java.util.Map
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods sort java.util.Map groovy.lang.Closure
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods split java.lang.String
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods split java.util.Collection groovy.lang.Closure
@@ -749,6 +1004,7 @@ staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods toSorted java.util
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods tokenize java.lang.String
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods tokenize java.lang.String java.lang.Character
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods tokenize java.lang.String java.lang.String
+staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods transpose java.util.List
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods unique java.util.Collection
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods unique java.util.Collection boolean
 staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods unique java.util.Collection boolean groovy.lang.Closure
