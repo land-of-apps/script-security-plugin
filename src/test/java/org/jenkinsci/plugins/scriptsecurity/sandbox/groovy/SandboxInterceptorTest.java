@@ -42,6 +42,7 @@ import groovy.transform.ASTTest;
 import hudson.Functions;
 import hudson.util.IOUtils;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -347,7 +348,7 @@ public class SandboxInterceptorTest {
         }
     }
 
-    @Issue({"JENKINS-25119", "JENKINS-27725"})
+    @Issue({"JENKINS-25119", "JENKINS-27725", "JENKINS-57299"})
     @Test public void defaultGroovyMethods() throws Exception {
         assertRejected(new ProxyWhitelist(), "staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods toInteger java.lang.String", "'123'.toInteger();");
         assertEvaluate(new GenericWhitelist(), 123, "'123'.toInteger();");
@@ -361,6 +362,12 @@ public class SandboxInterceptorTest {
         assertEvaluate(new GenericWhitelist(), true, "'42'.number");
         // TODO should also cover set* methods, though these seem rare
         // TODO check DefaultGroovyStaticMethods also (though there are few useful & safe calls there)
+        // cover drop and dropRight methods:
+        assertEvaluate(new GenericWhitelist(), Arrays.asList(2, 3, 4), "[1, 2, 3, 4].drop(1)");
+        assertEvaluate(new GenericWhitelist(), Arrays.asList(1, 2, 3), "[1, 2, 3, 4].dropRight(1)");
+        // cover take and takeRight methods:
+        assertEvaluate(new GenericWhitelist(), Arrays.asList(1, 2), "[1, 2, 3, 4].take(2)");
+        assertEvaluate(new GenericWhitelist(), Arrays.asList(3, 4), "[1, 2, 3, 4].takeRight(2)");
     }
 
     @Test public void whitelistedIrrelevantInsideScript() throws Exception {
@@ -852,8 +859,27 @@ public class SandboxInterceptorTest {
     }
 
     private static Object evaluate(Whitelist whitelist, String script) {
-        GroovyShell shell = new GroovyShell(GroovySandbox.createSecureCompilerConfiguration());
-        Object actual = GroovySandbox.run(shell, script, whitelist);
+        CompilerConfiguration cc = GroovySandbox.createSecureCompilerConfiguration();
+        GroovyShell shell = new GroovyShell(cc);
+        /* TODO: This duplicates code in SecureGroovyScript and CpsGroovyShell. I think we could create a new method
+           in GroovySandbox with a signature like `public static void setGroovyClassLoader(GroovyShell, ClassLoader)`
+           that sets the loader field after wrapping the passed loader in CleanGroovyClassLoader, and then have
+           SecureGroovyScript call that method to avoid duplication. To also avoid the duplication in CpsGroovyShell,
+           I think we'd also need to introduce a new subtype of GroovyShell that automatically called that method in the
+           constructor (might need to tweak the memory leak fixes in workflow-cps to be able to use it from CpsGroovyShell).
+           We could also add a method like the following to GroovySandbox and recommend downstream users use it instead
+           of directly instantiating GroovyShell: `public static GroovyShell prepareSecureGroovyShell(ClassLoader, Binding, CompilerConfiguration)`.
+        */
+        try {
+            Field loaderF = GroovyShell.class.getDeclaredField("loader");
+            loaderF.setAccessible(true);
+            ClassLoader loader = GroovyShell.class.getClassLoader();
+            ClassLoader memoryProtectedLoader = new SecureGroovyScript.CleanGroovyClassLoader(GroovySandbox.createSecureClassLoader(loader), cc);
+            loaderF.set(shell, memoryProtectedLoader);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new AssertionError("Groovy class loader fields have changed", e);
+        }
+        Object actual = new GroovySandbox().withWhitelist(whitelist).runScript(shell, script);
         if (actual instanceof GString) {
             actual = actual.toString(); // for ease of comparison
         }
@@ -1155,6 +1181,43 @@ public class SandboxInterceptorTest {
             assertThat(innerE.getMessage(), containsString("Object.finalize()"));
         }
     }
+    @Test
+    public void alwaysRejectPermanentlyBlacklisted() throws Exception {
+        assertRejected(new StaticWhitelist("staticMethod java.lang.System exit int"),
+                "staticMethod java.lang.System exit int",
+                "System.exit(1)");
+        assertRejected(new StaticWhitelist("method java.lang.Runtime exit int", "staticMethod java.lang.Runtime getRuntime"),
+                "method java.lang.Runtime exit int",
+                "Runtime r = Runtime.getRuntime();\n" +
+                        "r.exit(1)");
+        assertRejected(new StaticWhitelist("staticMethod java.lang.Runtime getRuntime", "method java.lang.Runtime halt int"),
+                "method java.lang.Runtime halt int",
+                "Runtime r = Runtime.getRuntime();\n" +
+                        "r.halt(1)");
+    }
+
+    @Issue("JENKINS-56682")
+    @Test
+    public void scriptInitializersAtFieldSyntax() throws Exception {
+        assertEvaluate(new GenericWhitelist(), 3,
+                "import groovy.transform.Field\n" +
+                "@Field static int foo = 1\n" +
+                "@Field int bar = foo + 1\n" +
+                "@Field int baz = bar + 1\n" +
+                "baz");
+    }
+
+    @Issue("JENKINS-56682")
+    @Test
+    public void scriptInitializersClassSyntax() throws Exception {
+        assertEvaluate(new GenericWhitelist(), 2,
+                "class MyScript extends Script {\n" +
+                "  { MyScript.foo++ }\n" + // The instance initializer seems to be context sensitive, if placed below the field it is treated as a closure...
+                "  static { MyScript.foo++ }\n" +
+                "  static int foo = 0\n" +
+                "  def run() { MyScript.foo }\n" +
+                "}\n");
+    }
 
     @Issue("SECURITY-1538")
     @Test public void blockMethodNameInMethodCalls() throws Exception {
@@ -1294,6 +1357,9 @@ public class SandboxInterceptorTest {
             // Not ok, instantiating any of the wrappers would allow attackers to bypass the fix.
             assertRejected(new GenericWhitelist(), "new " + syntheticParamType.getName() + " java.lang.Object[]",
                     "new " + syntheticParamType.getCanonicalName() + "(null)");
+            // The wrapper's constructors are permanently blacklisted
+            assertRejected(new BlanketWhitelist(), "new " + syntheticParamType.getName() + " java.lang.Object[]",
+                     "new " + syntheticParamType.getCanonicalName() + "(null)");
         }
     }
 

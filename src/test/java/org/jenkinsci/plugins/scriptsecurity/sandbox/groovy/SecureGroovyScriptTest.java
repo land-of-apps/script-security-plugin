@@ -993,6 +993,19 @@ public class SecureGroovyScriptTest {
         r.assertLogContains("staticMethod jenkins.model.Jenkins getInstance", b);
     }
 
+    @Issue("JENKINS-56682")
+    @Test
+    public void testScriptAtFieldInitializers() throws Exception {
+        FreeStyleProject p = r.createFreeStyleProject();
+        p.getPublishersList().add(new TestGroovyRecorder(new SecureGroovyScript(
+                "import groovy.transform.Field\n" +
+                "@Field foo = 1\n" +
+                "@Field bar = foo + 1\n" + // evaluated during GroovyShell.parse
+                "if (bar != 2) {\n" +
+                "  throw new Exception('oops')\n" +
+                "}\n", true, null)));
+        r.buildAndAssertSuccess(p);
+    }
     @Issue("SECURITY-1465")
     @Test public void blockLhsInMethodPointerExpression() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
