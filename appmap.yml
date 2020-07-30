@@ -1,0 +1,3 @@
+name: jenkins-plugin-script-security
+packages:
+- path: org.jenkinsci.plugins.scriptsecurity
