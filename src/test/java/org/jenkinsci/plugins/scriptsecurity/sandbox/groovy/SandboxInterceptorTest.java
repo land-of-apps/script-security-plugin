@@ -1181,7 +1181,6 @@ public class SandboxInterceptorTest {
             assertThat(innerE.getMessage(), containsString("Object.finalize()"));
         }
     }
-
     @Test
     public void alwaysRejectPermanentlyBlacklisted() throws Exception {
         assertRejected(new StaticWhitelist("staticMethod java.lang.System exit int"),

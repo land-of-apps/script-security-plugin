@@ -1006,7 +1006,6 @@ public class SecureGroovyScriptTest {
                 "}\n", true, null)));
         r.buildAndAssertSuccess(p);
     }
-
     @Issue("SECURITY-1465")
     @Test public void blockLhsInMethodPointerExpression() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
