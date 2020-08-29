@@ -1,3 +1,5 @@
 name: jenkins-plugin-script-security
 packages:
+- path: jenkins
+- path: hudson
 - path: org.jenkinsci.plugins.scriptsecurity
